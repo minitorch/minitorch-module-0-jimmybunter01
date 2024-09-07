@@ -27,9 +27,6 @@ from minitorch.operators import (
 
 from .strategies import assert_close, small_floats
 
-# ## Task 0.1 Basic hypothesis tests.
-
-
 @pytest.mark.task0_1
 @given(small_floats, small_floats)
 def test_same_as_python(x: float, y: float) -> None:
@@ -90,25 +87,21 @@ def test_eq(a: float) -> None:
     assert eq(a, a - 1.0) == 0.0
     assert eq(a, a + 1.0) == 0.0
 
-
-# ## Task 0.2 - Property Testing
-
-# Implement the following property checks
-# that ensure that your operators obey basic
-# mathematical rules.
-
-
 @pytest.mark.task0_2
 @given(small_floats)
 def test_sigmoid(a: float) -> None:
-    """Check properties of the sigmoid function, specifically
-    * It is always between 0.0 and 1.0.
-    * one minus sigmoid is the same as sigmoid of the negative
-    * It crosses 0 at 0.5
-    * It is  strictly increasing.
     """
-    # TODO: Implement for Task 0.2.
-    raise NotImplementedError("Need to implement for Task 0.2")
+    Check properties of the sigmoid function, specifically
+     1. It is always between 0.0 and 1.0.
+     2. 1-sigmoid is the same as sigmoid of the negative
+     3. It crosses 0 at 0.5
+     4. It is strictly increasing.
+    """
+    
+    assert (sigmoid(a) >= 0.0) & (sigmoid(a) <= 1.0)
+    assert 1 - sigmoid(a) == -sigmoid(a)
+    assert sigmoid(0) == 0.5
+    assert sigmoid
 
 
 @pytest.mark.task0_2

@@ -1,54 +1,102 @@
 """Collection of the core mathematical operators used throughout the code base."""
 
 import math
+from typing import Callable, Iterable:
 
-# ## Task 0.1
-from typing import Callable, Iterable
+def mul(x: float|int, y: float|int) -> float|int:
+    return x*y
 
-#
-# Implementation of a prelude of elementary functions.
+def id(x: float|int) -> float|int:
+    return x
 
-# Mathematical functions:
-# - mul
-# - id
-# - add
-# - neg
-# - lt
-# - eq
-# - max
-# - is_close
-# - sigmoid
-# - relu
-# - log
-# - exp
-# - log_back
-# - inv
-# - inv_back
-# - relu_back
-#
-# For sigmoid calculate as:
-# $f(x) =  \frac{1.0}{(1.0 + e^{-x})}$ if x >=0 else $\frac{e^x}{(1.0 + e^{x})}$
-# For is_close:
-# $f(x) = |x - y| < 1e-2$
+def add(x: float|int, y: float|int) -> float|int:
+    return x+y
 
+def neg(x: float|int) -> float|int:
+    return -x
 
-# TODO: Implement for Task 0.1.
+def lt(x: float|int, y: float|int) -> bool:
+    if x < y:
+        return True
+    else:
+        return False
 
+def eq(x: float|int, y: float|int) -> bool:
+    if x == y:
+        return True
+    else:
+        return False
 
-# ## Task 0.3
+def max(x: float|int, y: float|int) -> float|int:
+    if x >= y:
+        return x
+    else:
+        return y
 
-# Small practice library of elementary higher-order functions.
+def is_close(x: float|int, y: float:int) -> bool:
+    difference = math.abs(x-y)
 
-# Implement the following core functions
-# - map
-# - zipWith
-# - reduce
-#
-# Use these to implement
-# - negList : negate a list
-# - addLists : add two lists together
-# - sum: sum lists
-# - prod: take the product of lists
+    if difference < 1e-2:
+        return True    
 
+def sigmoid(x: float|int):
+    f_x = 1 / (1+math.exp(-x)) if x >= 0 else math.exp(x) / (1 + math.exp(x))
+    return f_X
 
-# TODO: Implement for Task 0.3.
+def relu(x: float|int):
+    return max(0,x)
+
+def log(x: float|int) -> float:
+    return math.log(x, 10) 
+
+def exp(x: float|int) -> float:
+    return math.exp(x)
+
+def inv(x: float|int) -> float:
+    return 1/x
+
+def log_back(x: float|int, y: float|int) -> float:
+    log_derivative = y / (x * math.log(10))
+    return log_derivative
+
+def inv_back(x: float|int, y: float|int) -> float:
+    inv_derivatibe = y / ((-x)**2))
+    return inv_deribative
+
+def relu_back(x: float|int, y: float|int) -> float:
+    relu_derivative = y if x >= 0 else 0
+    return relu_derivative
+
+def map(input: Iterable[float|int], function: Callable) -> Iterable[float|int]:
+    new_iterable = 
+    for i, element in enumerate(input):
+        new_iterable[i]  = function(element)
+    return new_iterable
+    
+def zipWidth(iterable_a: Iterable[float|int], iterable_b: Iterable[float|int], function: Callable) -> Iterable[float|int]:
+    no_of_elements = len(iterable_a)
+    for i in range(no_of_elements):
+        output[i] = function(iterable_a[i], iterable_b[i])
+    return output
+    
+def reduce(input: Iterable[float|int], function: Callable) -> float|int:
+    no_of_elements = len(input)
+    for i in range(no_of_elements-1):
+        output = output + func(input[i], input[i+1])
+    return output
+        
+def negList(input: List[float|int]) -> List:
+    mapped = map(input, neg)
+    return mapped
+
+def addLists(list_a: List[float|int], list_b: List[float|int]) -> List:
+    new_list = zipWidth(list_a, list_b, add)
+    return new_list    
+    
+def sum(input: List[float|int]) -> float|int:
+    summed = reduce(input, add)
+    return summed
+
+def prod(input: List[float|int]):
+    product = reduce(input, mul)
+    return product
