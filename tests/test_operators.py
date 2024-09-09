@@ -138,8 +138,7 @@ def test_other(a: float, b: float, c: float) -> None:
     assert add(add(a,b), c) == add(a, add(b,c))
 
 
-# ## Task 0.3  - Higher-order functions
-
+# ## Task 0.3  - Higher-order function
 # These tests check that your higher-order functions obey basic
 # properties.
 
@@ -162,8 +161,8 @@ def test_sum_distribute(ls1: List[float], ls2: List[float]) -> None:
     """Write a test that ensures that the sum of `ls1` plus the sum of `ls2`
     is the same as the sum of each element of `ls1` plus each element of `ls2`.
     """
-    # TODO: Implement for Task 0.3.
-    raise NotImplementedError("Need to implement for Task 0.3")
+        
+    assert sum(ls1) + sum (ls2) == addLists(ls1, ls2)
 
 
 @pytest.mark.task0_3

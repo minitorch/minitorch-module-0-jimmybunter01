@@ -1,7 +1,7 @@
 """Collection of the core mathematical operators used throughout the code base."""
 
 import math
-from typing import Callable, Iterable:
+from typing import Callable, Iterable, List
 
 def mul(x: float|int, y: float|int) -> float|int:
     return x*y
@@ -33,7 +33,7 @@ def max(x: float|int, y: float|int) -> float|int:
     else:
         return y
 
-def is_close(x: float|int, y: float:int) -> bool:
+def is_close(x: float|int, y: float|int) -> bool:
     difference = math.abs(x-y)
 
     if difference < 1e-2:
@@ -60,15 +60,14 @@ def log_back(x: float|int, y: float|int) -> float:
     return log_derivative
 
 def inv_back(x: float|int, y: float|int) -> float:
-    inv_derivatibe = y / ((-x)**2))
+    inv_derivatibe = y / ((-x)**2)
     return inv_deribative
 
 def relu_back(x: float|int, y: float|int) -> float:
     relu_derivative = y if x >= 0 else 0
     return relu_derivative
 
-def map(input: Iterable[float|int], function: Callable) -> Iterable[float|int]:
-    new_iterable = 
+def map(input: Iterable[float|int], function: Callable) -> Iterable[float|int]: 
     for i, element in enumerate(input):
         new_iterable[i]  = function(element)
     return new_iterable
