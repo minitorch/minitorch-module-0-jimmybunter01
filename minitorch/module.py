@@ -1,7 +1,5 @@
 from __future__ import annotations
-
 from typing import Any, Dict, Optional, Sequence, Tuple
-
 
 class Module:
     """Modules form a tree that store parameters and other
@@ -32,14 +30,13 @@ class Module:
     def train(self) -> None:
         """Set the mode of this module and all descendent modules to `train`."""
         self.training = True
-        for module in self.modules.values():
-            module.training = True
-        
+        for module in self._modules.values():
+            module.training = True        
 
     def eval(self) -> None:
         """Set the mode of this module and all descendent modules to `eval`."""
         self.training = False
-        for module in self.modules.values():
+        for module in self._modules.values():
             module.training = False
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
@@ -50,13 +47,57 @@ class Module:
             The name and `Parameter` of each ancestor parameter.
 
         """
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        
+        def _get_module_params(module: Module) -> Sequence[Tuple[str, Parameter]]:
+            module_parameters = []
+            for name, param in self._parameters.items():
+                module_parameters.append((name, param))
+
+            return module_parameters
+
+        def _get_child_module_parms(module: Module) -> Dict[str, Sequence[Tuple[str, Parameter]]]
+            child_module_parameters = {}
+            for name, module in child_modules:
+                 module_parameters = _get_module_params(module)
+                 child_module_parameters[name] = module_parameters
+
+            return child_mopdule_parameters
+
+
+        # 1. Get all of the parameters for the current module.
+        parameters = *_get_module_params(self)
+
+        # 2. For a given child module do the following:
+            # i. Get parameters
+            # ii. Get any child modules of thie child module and get their params.
+        
+        while len(child_modules) > 0:
+            child_modules = self._modules.items()    
+
+            for chiild_name, chhild_module in child_modules:
+                child_module_params = _get_child_module_params()
+
+
+                                             
+            for param_name, param_value in child_module._parameters.items():
+                child_level = ".".join(modules)
+                parameters.append((f"{child_level}.{param_name}", param_value))
+        print(modules)
+        
+        return parameters        
+
 
     def parameters(self) -> Sequence[Parameter]:
         """Enumerate over all the parameters of this module and its descendents."""
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        parameters = []
+        for param in self._parameters.values:
+            parameters.append(param)
+
+        for child in self.modules():
+            for param in child._parameters.values():
+                parameters.append(param)
+
+        return parameters
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """Manually add a parameter. Useful helper for scalar parameters.

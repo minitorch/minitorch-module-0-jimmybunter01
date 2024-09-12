@@ -10,7 +10,7 @@ def id(x: float|int) -> float|int:
     return x
 
 def add(x: float|int, y: float|int) -> float|int:
-    return x+y
+    return x + y
 
 def neg(x: float|int) -> float|int:
     return -x
@@ -34,14 +34,14 @@ def max(x: float|int, y: float|int) -> float|int:
         return y
 
 def is_close(x: float|int, y: float|int) -> bool:
-    difference = math.abs(x-y)
+    difference = abs(x-y)
 
     if difference < 1e-2:
         return True    
 
 def sigmoid(x: float|int):
     f_x = 1 / (1+math.exp(-x)) if x >= 0 else math.exp(x) / (1 + math.exp(x))
-    return f_X
+    return f_x
 
 def relu(x: float|int):
     return max(0,x)
@@ -68,20 +68,30 @@ def relu_back(x: float|int, y: float|int) -> float:
     return relu_derivative
 
 def map(input: Iterable[float|int], function: Callable) -> Iterable[float|int]: 
-    for i, element in enumerate(input):
-        new_iterable[i]  = function(element)
+    new_iterable = []
+    for element in input:
+        new_iterable.append(function(element))
     return new_iterable
     
 def zipWidth(iterable_a: Iterable[float|int], iterable_b: Iterable[float|int], function: Callable) -> Iterable[float|int]:
     no_of_elements = len(iterable_a)
+    output = []
     for i in range(no_of_elements):
-        output[i] = function(iterable_a[i], iterable_b[i])
+        output.append(function(iterable_a[i], iterable_b[i]))
     return output
     
 def reduce(input: Iterable[float|int], function: Callable) -> float|int:
     no_of_elements = len(input)
-    for i in range(no_of_elements-1):
-        output = output + func(input[i], input[i+1])
+
+    output = 0
+    if no_of_elements > 0:
+        output = input[0]
+    
+        if no_of_elements > 1:
+            for i in range(1, no_of_elements):
+                output = function(output, input[i])
+
+    print(input, output)
     return output
         
 def negList(input: List[float|int]) -> List:

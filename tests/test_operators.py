@@ -99,16 +99,17 @@ def test_sigmoid(a: float) -> None:
     """
     
     assert (sigmoid(a) >= 0.0) & (sigmoid(a) <= 1.0)
-    assert 1 - sigmoid(a) == -sigmoid(a)
-    assert sigmoid(0) == 0.5
-    assert sigmoid(0) < sigmoid(1)
+    assert_close((1.0 - sigmoid(a)), sigmoid(-a))
+    assert sigmoid(0.0) == 0.5
+    assert sigmoid(0.0) < sigmoid(1.0)
 
 @pytest.mark.task0_2
 @given(small_floats, small_floats, small_floats)
 def test_transitive(a: float, b: float, c: float) -> None:
     """Test the transitive property of less-than (a < b and b < c implies a < c)"""
-    
-    assert a < c if (a < b) & (b < c) == True 
+
+    if (a < b) & (b < c) == True:
+        assert a < c
 
 @pytest.mark.task0_2
 @given(small_floats, small_floats)
@@ -127,7 +128,7 @@ def test_distribute(a: float, b: float, c: float) -> None:
     :math:`z \times (x + y) = z \times x + z \times y`
     """
     
-    assert mul(c, add(a,b)) == mul(add(a+c), b) 
+    assert_close(mul(c, add(a,b)), add(mul(c, a), mul(c,b)))
 
 
 @pytest.mark.task0_2
@@ -135,13 +136,12 @@ def test_distribute(a: float, b: float, c: float) -> None:
 def test_other(a: float, b: float, c: float) -> None:
     """Write a test that ensures some other property holds for your functions."""
 
-    assert add(add(a,b), c) == add(a, add(b,c))
+    assert_close(add(add(a,b), c), add(a, add(b,c)))
 
 
 # ## Task 0.3  - Higher-order function
 # These tests check that your higher-order functions obey basic
 # properties.
-
 
 @pytest.mark.task0_3
 @given(small_floats, small_floats, small_floats, small_floats)
@@ -150,7 +150,6 @@ def test_zip_with(a: float, b: float, c: float, d: float) -> None:
     y1, y2 = a + c, b + d
     assert_close(x1, y1)
     assert_close(x2, y2)
-
 
 @pytest.mark.task0_3
 @given(
@@ -162,7 +161,7 @@ def test_sum_distribute(ls1: List[float], ls2: List[float]) -> None:
     is the same as the sum of each element of `ls1` plus each element of `ls2`.
     """
         
-    assert sum(ls1) + sum (ls2) == addLists(ls1, ls2)
+    assert_close(sum(ls1) + sum (ls2), sum(addLists(ls1, ls2)))
 
 
 @pytest.mark.task0_3
