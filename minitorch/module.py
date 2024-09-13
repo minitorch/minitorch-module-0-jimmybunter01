@@ -55,28 +55,26 @@ class Module:
 
             return module_parameters
 
-        def _get_child_module_parms(module: Module) -> Dict[str, Sequence[Tuple[str, Parameter]]]
+        def _get_child_module_parms(module: Module) -> Dict[str, Sequence[Tuple[str, Parameter]]]:
             child_module_parameters = {}
             for name, module in child_modules:
                  module_parameters = _get_module_params(module)
                  child_module_parameters[name] = module_parameters
 
-            return child_mopdule_parameters
-
+            return child_module_parameters
 
         # 1. Get all of the parameters for the current module.
-        parameters = *_get_module_params(self)
+        parameters = get_module_params(self)
 
         # 2. For a given child module do the following:
             # i. Get parameters
             # ii. Get any child modules of thie child module and get their params.
-        
-        while len(child_modules) > 0:
-            child_modules = self._modules.items()    
 
+        child_modules = self._modules.items
+        while len(child_modules) > 0:    
             for chiild_name, chhild_module in child_modules:
                 child_module_params = _get_child_module_params()
-
+                
 
                                              
             for param_name, param_value in child_module._parameters.items():
