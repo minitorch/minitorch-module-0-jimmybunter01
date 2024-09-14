@@ -1,6 +1,45 @@
 from __future__ import annotations
-
 from typing import Any, Dict, Optional, Sequence, Tuple
+
+
+def _walk_the_node_tree(
+    module: Module, parent_module_name: str | None = None
+) -> Sequence[Tuple[str, Parameter]]:
+    if parent_module_name is None:
+        module_parameters = [
+            (name, param) for (name, param) in module._parameters.items()
+        ]
+    else:
+        module_parameters = [
+            (f"{parent_module_name}.{name}", param)
+            for (name, param) in module._parameters.items()
+        ]
+
+    child_modules = module._modules.items()
+    if child_modules:
+        for name, module in child_modules:
+            child_module_params = []
+            child_module_params = (
+                _walk_the_node_tree(module, f"{parent_module_name}.{name}")
+                if parent_module_name is not None
+                else _walk_the_node_tree(module, name)
+            )
+            module_parameters = [*module_parameters, *child_module_params]
+
+    return module_parameters
+
+
+def _walk_the_node_tree_without_names(module: Module) -> Sequence[Parameter]:
+    module_parameters = [param for param in module._parameters.values()]
+    child_modules = module._modules.items()
+
+    if child_modules:
+        for name, module in child_modules:
+            child_module_params = []
+            child_module_params = _walk_the_node_tree_without_names(module)
+            module_parameters = [*module_parameters, *child_module_params]
+
+    return module_parameters
 
 
 class Module:
@@ -31,13 +70,15 @@ class Module:
 
     def train(self) -> None:
         """Set the mode of this module and all descendent modules to `train`."""
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        self.training = True
+        for module in self._modules.values():
+            module.training = True
 
     def eval(self) -> None:
         """Set the mode of this module and all descendent modules to `eval`."""
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        self.training = False
+        for module in self._modules.values():
+            module.training = False
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
         """Collect all the parameters of this module and its descendents.
@@ -47,13 +88,14 @@ class Module:
             The name and `Parameter` of each ancestor parameter.
 
         """
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        named_parameters = _walk_the_node_tree(self, None)
+        print(named_parameters)
+        return named_parameters
 
     def parameters(self) -> Sequence[Parameter]:
         """Enumerate over all the parameters of this module and its descendents."""
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        parameters = _walk_the_node_tree_without_names(self)
+        return parameters
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """Manually add a parameter. Useful helper for scalar parameters.
@@ -89,6 +131,7 @@ class Module:
         return None
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """Run forward method when the object is called."""
         return self.forward(*args, **kwargs)
 
     def __repr__(self) -> str:
