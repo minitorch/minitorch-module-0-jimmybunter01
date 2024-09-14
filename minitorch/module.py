@@ -1,6 +1,47 @@
 from __future__ import annotations
 from typing import Any, Dict, Optional, Sequence, Tuple
 
+
+def _walk_the_node_tree(
+    module: Module, parent_module_name: str | None = None
+) -> Sequence[Tuple[str, Parameter]]:
+    if parent_module_name is None:
+        module_parameters = [
+            (name, param) for (name, param) in module._parameters.items()
+        ]
+    else:
+        module_parameters = [
+            (f"{parent_module_name}.{name}", param)
+            for (name, param) in module._parameters.items()
+        ]
+
+    child_modules = module._modules.items()
+    if child_modules:
+        for name, module in child_modules:
+            child_module_params = []
+            child_module_params = (
+                _walk_the_node_tree(module, f"{parent_module_name}.{name}")
+                if parent_module_name is not None
+                else _walk_the_node_tree(module, name)
+            )
+            module_parameters = [*module_parameters, *child_module_params]
+
+    return module_parameters
+
+
+def _walk_the_node_tree_without_names(module: Module) -> Sequence[Parameter]:
+    module_parameters = [param for param in module._parameters.values()]
+    child_modules = module._modules.items()
+
+    if child_modules:
+        for name, module in child_modules:
+            child_module_params = []
+            child_module_params = _walk_the_node_tree_without_names(module)
+            module_parameters = [*module_parameters, *child_module_params]
+
+    return module_parameters
+
+
 class Module:
     """Modules form a tree that store parameters and other
     submodules. They make up the basis of neural network stacks.
@@ -31,7 +72,7 @@ class Module:
         """Set the mode of this module and all descendent modules to `train`."""
         self.training = True
         for module in self._modules.values():
-            module.training = True        
+            module.training = True
 
     def eval(self) -> None:
         """Set the mode of this module and all descendent modules to `eval`."""
@@ -47,54 +88,13 @@ class Module:
             The name and `Parameter` of each ancestor parameter.
 
         """
-        
-        def _get_module_params(module: Module) -> Sequence[Tuple[str, Parameter]]:
-            module_parameters = []
-            for name, param in self._parameters.items():
-                module_parameters.append((name, param))
-
-            return module_parameters
-
-        def _get_child_module_parms(module: Module) -> Dict[str, Sequence[Tuple[str, Parameter]]]:
-            child_module_parameters = {}
-            for name, module in child_modules:
-                 module_parameters = _get_module_params(module)
-                 child_module_parameters[name] = module_parameters
-
-            return child_module_parameters
-
-        # 1. Get all of the parameters for the current module.
-        parameters = get_module_params(self)
-
-        # 2. For a given child module do the following:
-            # i. Get parameters
-            # ii. Get any child modules of thie child module and get their params.
-
-        child_modules = self._modules.items
-        while len(child_modules) > 0:    
-            for chiild_name, chhild_module in child_modules:
-                child_module_params = _get_child_module_params()
-                
-
-                                             
-            for param_name, param_value in child_module._parameters.items():
-                child_level = ".".join(modules)
-                parameters.append((f"{child_level}.{param_name}", param_value))
-        print(modules)
-        
-        return parameters        
-
+        named_parameters = _walk_the_node_tree(self, None)
+        print(named_parameters)
+        return named_parameters
 
     def parameters(self) -> Sequence[Parameter]:
         """Enumerate over all the parameters of this module and its descendents."""
-        parameters = []
-        for param in self._parameters.values:
-            parameters.append(param)
-
-        for child in self.modules():
-            for param in child._parameters.values():
-                parameters.append(param)
-
+        parameters = _walk_the_node_tree_without_names(self)
         return parameters
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
@@ -131,6 +131,7 @@ class Module:
         return None
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """Run forward method when the object is called."""
         return self.forward(*args, **kwargs)
 
     def __repr__(self) -> str:

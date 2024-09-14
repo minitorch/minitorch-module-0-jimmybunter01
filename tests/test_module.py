@@ -66,6 +66,7 @@ def test_stacked_demo() -> None:
 VAL_A = 50.0
 VAL_B = 100.0
 
+
 class Module1(minitorch.Module):
     def __init__(self, size_a: int, size_b: int, val: float) -> None:
         super().__init__()
